@@ -8,7 +8,7 @@ import { ReactQueryDevtools } from 'react-query-devtools'
 //
 
 import { Wrapper, Main } from '../components/styled'
-import Sidebar from '../components/Sidebar'
+// import Sidebar from '../components/Sidebar'
 
 //
 
