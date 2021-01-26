@@ -50,7 +50,7 @@ async function POST(req, res) {
     ...req.body,
   }
 
-  if (row.title === 'poop') {
+  if (row.title === 'Bad Word') {
     res.status(400)
     res.json({ message: 'You cannot use bad words in titles!' })
     return
