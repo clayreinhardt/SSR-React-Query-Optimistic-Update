@@ -4,7 +4,9 @@ import { useMutation, queryCache } from 'react-query'
 export default function useSavePost() {
   return useMutation(
     (values) =>
-      axios.patch(`/api/posts/${values.id}`, values).then((res) => res.data),
+      axios.patch(`/api/posts/${values.id}`, values, {
+        "Cache-Control": "s-maxage=1, stale-while-revalidate"
+      }).then((res) => res.data),
     {
       onMutate: (values) => {
         const oldPost = queryCache.getQueryData(['posts', values.id])

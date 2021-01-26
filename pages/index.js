@@ -8,22 +8,52 @@ import PostForm from '../components/PostForm'
 // import useLogout from '../hooks/useLogout'
 // import useLogin from '../hooks/useLogin'
 
+/* 
+?   fetch server side props for SEO optimization
+*/
+// const fetchPosts = async () => {
+//   await new Promise((r) => setTimeout(r, 5000))
+//   return axios
+//     .get('/api/posts')
+//     .then((res) => res.data)
+// }
+
+
+// export const getServerSideProps = async () => {
+//   const posts = await fetchPosts()
+//   // console.log('posts', posts)
+
+//   return {
+//     props: {
+//       posts,
+//     }
+//   }
+// }
+
+
 export default function Posts() {
   const postsQuery = useQuery('posts', () =>
     axios.get('/api/posts').then((res) => res.data)
+    // ,
+    // {
+    //   initialData: posts,
+    //   initialState: true,
+    // }
   )
 
   const [createPost, createPostInfo] = useMutation(
-    (values) => axios.post('/api/posts', values),
+    (values) => axios.post('/api/posts', values, {
+      "Cache-Control": "s-maxage=1, stale-while-revalidate"
+    }),
     {
       onMutate: (values) => {
         queryCache.cancelQueries('posts')
 
-        const oldUser = queryCache.getQueryData('posts')
+        const oldPosts = queryCache.getQueryData('posts')
 
-        queryCache.setQueryData('posts', (oldUser) => {
+        queryCache.setQueryData('posts', (oldPosts) => {
           return [
-            ...oldUser,
+            ...oldPosts,
             {
               ...values,
               id: Date.now(),
@@ -31,10 +61,10 @@ export default function Posts() {
           ]
         })
 
-        return () => queryCache.setQueryData('posts', oldUser)
+        return () => queryCache.setQueryData('posts', oldPosts)
       },
       onError: (error, values, rollback) => {
-        // window.alert(error.response.data.message)
+        window.alert(error.response)
         if (rollback) {
           rollback()
         }
