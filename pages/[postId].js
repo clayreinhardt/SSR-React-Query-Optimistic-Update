@@ -14,16 +14,12 @@ export default function Post() {
   } = useRouter()
 
   const postQuery = useQuery(['post', postId], () =>
-    axios.get(`/api/posts/${postId}`, {
-        "Cache-Control": "s-maxage=1, stale-while-revalidate"
-      }).then((res) => res.data)
+    axios.get(`/api/posts/${postId}`).then((res) => res.data)
   )
 
   const [savePost, savePostInfo] = useMutation(
     (values) =>
-      axios.patch(`/api/posts/${values.id}`, values, {
-        "Cache-Control": "s-maxage=1, stale-while-revalidate"
-      }).then((res) => res.data),
+      axios.patch(`/api/posts/${values.id}`, values).then((res) => res.data),
     {
       onMutate: (values) => {
         queryCache.cancelQueries(['post', String(values.id)])

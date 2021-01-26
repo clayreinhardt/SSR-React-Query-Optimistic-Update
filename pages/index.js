@@ -42,9 +42,11 @@ export default function Posts() {
   )
 
   const [createPost, createPostInfo] = useMutation(
-    (values) => axios.post('/api/posts', values, {
-      "Cache-Control": "s-maxage=1, stale-while-revalidate"
-    }),
+    (values) => axios.post('/api/posts', values, 
+    // {
+    //   headers: {"Cache-Control": "s-maxage=1, stale-while-revalidate"}
+    // }
+    ),
     {
       onMutate: (values) => {
         queryCache.cancelQueries('posts')
